@@ -47,3 +47,33 @@ class Serialized_data_view(APIView):
         serializer = User_detail_serializer(db_data,many=True)
         return Response(serializer.data)
 
+class Post_supply_chain_data(APIView):
+   def post(self,request):
+       data = request.data
+       serializer = Supply_chain_data_serializer(data=data)
+       if serializer.is_valid():
+           serializer.save()
+           return Response(serializer.data)
+       return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+class Supply_Api_view(APIView):
+    def get(self,request):
+        db_data = Supply_chain_data.objects.all()
+        serializer = Supply_chain_data_serializer(db_data,many=True)
+        return Response(serializer.data)
+    
+class Firm_table_data(APIView):
+    def post(self,request):
+        data = request.data
+        serializer = firm_data_serializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
+class Firm_data_api_view(APIView):
+    def get(self,request):
+        db_data = firm_data.objects.all()
+        serializer = firm_data_serializer(db_data,many=True)
+        return Response(serializer.data)
+
