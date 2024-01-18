@@ -85,10 +85,8 @@ class Post_product_config_data(APIView):
         packaging_dict = {
             1:10,2:14,3:28
         }
-        hi = 20
         price = (10+0.5*(data['Bandwidth']**3))+(8+3*(data['Warranty']**2))+packaging_dict[data['Packaging']]
         data['Price'] = round(price)
-        print(hi,data['Price'])
         serializer = product_config_serializer(data=data)
         if serializer.is_valid():
             serializer.save()
