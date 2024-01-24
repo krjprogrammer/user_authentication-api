@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.core.serializers import serialize
 from django.http import HttpResponse
 from .models import User_details,Supply_chain_data,firm_data,Product_config,procurement_decision_api,simulation_demand
 from rest_framework import status
@@ -146,6 +147,13 @@ class post_procurement_data(APIView):
             Epsilon = {"units":total_epsilon_quantity,"Amount":total_epsilon_discount}
         )
         insert_values.save()
+        serialized_decision = serialize('json', [insert_values])[1:-1]
+        data['SAC_Responses']['procurement_decision'] = serialized_decision
+        updated_value = procurement_decision_api(admin_ID=data['admin_ID'],simulation_id=data['simulation_id'],firm_id=data['firm_id'],
+            Quarter=data['Quarter'],SAC_Responses=data['SAC_Responses'],Alpha={"units'": data['Alpha_quantity'], "Amount": Alpha_amount},
+            Beta={"units": data['Beta_quantity'], "Amount": Beta_amount},Gamma={"units": total_gamma_quantity, "Amount": total_gamma_discount},Delta={"units": total_delta_quantity, "Amount": total_delta_discount},
+            Epsilon={"units": total_epsilon_quantity, "Amount": total_epsilon_discount})
+        updated_value.save()
         serializer = procurement_post_serializer(data=data)
         if serializer.is_valid():
             serializer.save()
